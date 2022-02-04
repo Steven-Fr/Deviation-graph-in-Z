@@ -65,8 +65,6 @@ def reverse_colourmap(cmap, name = 'my_cmap_r'):
 
 
 
-
-
 def grafico():
      cmap = cm.jet
      cmap_r = reverse_colourmap(cmap)
@@ -95,12 +93,7 @@ def grafico():
                     y.append(quota_y)
                     z.append(quota_z)
 
-                    #time.sleep(2)
                count = count +1
-
-
-
-
 
           fig = plt.figure()
           ax = Axes3D(fig)
@@ -112,9 +105,6 @@ def grafico():
           L3 = Label(top, text = "File non esiste", fg = "red")
           L3.pack(padx = 50, pady = 5)
           L3.place(x = 190, y = 90)
-          # print "no file input"
-
-
 
 
 #label
@@ -124,7 +114,7 @@ L1.configure(bg= colour)
 L1.place ( x = 10, y = 5)
 #entry
 E1 = Entry(top, bd =4)
-E1.insert(0, r"C:\Users\sat11\Documents\GitHub\Parpas_DR\Dronex_VXX\backend_app\output")
+E1.insert(0, r"C:\Users\sat11\Documents\GitHub\Parpas_DR\Dronex_VXX\backend_app\output\speed14_3feb\output_complex_speed14_f2k_4000x3200_1.tab")
 E1.pack(padx = 50, pady = 5)
 E1.place(x = 10, y = 35,width=530)
 
@@ -132,7 +122,6 @@ E1.place(x = 10, y = 35,width=530)
 b = tkinter.Button(top, text= "Visualizza\n grafico",bd =4 , command = grafico)
 b.pack(padx = 50, pady = 20)
 b.place(x = 15, y = 80)
-
 
 
 def quit():
