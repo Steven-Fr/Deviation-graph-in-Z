@@ -97,7 +97,7 @@ def grafico():
 
           fig = plt.figure()
           ax = Axes3D(fig)
-          surf = ax.plot_trisurf(x, y, z, cmap= cmap_r if z[0]<0 else cmap , linewidth=0.1)
+          surf = ax.plot_trisurf(x, y, z, cmap= cmap_r, linewidth=0.1)        # cm.hsv  vmin=-0.1, vmax=0.1
           fig.colorbar(surf, shrink=0.5, aspect=5)
           plt.savefig('teste.pdf')
           plt.show()
