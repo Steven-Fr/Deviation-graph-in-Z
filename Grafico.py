@@ -17,6 +17,9 @@ import tkinter as tk
 import re
 from os.path import exists
 
+from tkinter import filedialog as fd
+from tkinter.messagebox import showinfo
+
 
 
 colour = 'green3'
@@ -25,6 +28,7 @@ top = tkinter.Tk()
 top.title("Deviation graph in Z (© F.Steven)")
 top.geometry('550x150')
 top.configure(bg= colour)
+
 
 
 def reverse_colourmap(cmap, name = 'my_cmap_r'):
@@ -106,9 +110,16 @@ def grafico():
           L3.pack(padx = 50, pady = 5)
           L3.place(x = 190, y = 90)
 
+#scelta percorso da interfaccia
+def select_file():
+    filetypes = (('text files', '*.tab'),('All files', '*.*'))
+    filename2 = fd.askopenfilename(title='Open a file',initialdir='/',filetypes=filetypes)
+    E1.delete(0, "end")
+    E1.insert(0,filename2)
+
 
 #label
-L1 = Label(top, text="Inserire nome file di input:")
+L1 = Label(top, text="Inserire percorso file di input:")
 L1.pack( padx = 50, pady = 5)
 L1.configure(bg= colour)
 L1.place ( x = 10, y = 5)
@@ -119,9 +130,15 @@ E1.pack(padx = 50, pady = 5)
 E1.place(x = 10, y = 35,width=530)
 
 #bottone
-b = tkinter.Button(top, text= "Visualizza\n grafico",bd =4 , command = grafico)
+b = tkinter.Button(top, text= "Visualizza\n grafico", bd =4, command = grafico)
 b.pack(padx = 50, pady = 20)
 b.place(x = 15, y = 80)
+
+
+b2 = tkinter.Button(top, text= "Scegli percorso da PC", bd =4, command = select_file)
+b2.pack(padx = 50, pady = 20)
+b2.place(x =400, y = 80)
+
 
 
 def quit():
