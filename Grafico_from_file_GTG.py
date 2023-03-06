@@ -122,8 +122,8 @@ def grafico():
 
           ax1 = fig.add_subplot(111, projection = '3d')
           xig, yig = np.meshgrid(xi, yi)
-          norm = matplotlib.colors.Normalize(vmin = -0.0025, vmax = 0.0025)
-          ax1.plot_surface(xig, yig, zi, facecolors = cmap(norm(ci)), cmap = cmap, vmin = -0.025, vmax = 0.025)
+          norm = matplotlib.colors.Normalize(vmin = -0.005, vmax = 0.005)
+          ax1.plot_surface(xig, yig, zi, facecolors = cmap(norm(ci)), cmap = cmap, vmin = -0.03, vmax = 0.03)
           ax1.figure.colorbar(mpl.cm.ScalarMappable(norm = norm, cmap = cmap), ax = ax1, pad = 0.12,shrink = 0.5, aspect = 15)
           plt.show()
 
@@ -148,7 +148,7 @@ L1.configure(bg= colour)
 L1.place ( x = 10, y = 5)
 #entry
 E1 = Entry(top, bd =4)
-E1.insert(0, r"C:\Users\sat11\Documents\GitHub\GoodToGo\GTG\output\20230220_175104_Comparison.txt")
+E1.insert(0, r"C:/Users/sat11/Desktop/TRASFERTA_LOOKHEEDMARTIN/20230208_110746_DIA006_XY.tab")
 #E1.insert(0, r"C:\Users\sat11\Desktop\Dronex\SCANSIONI_MACCHINA_INCLINOMETRO\XXXXXXXXX____SCANSIONI_DroneX\SPD014_scan\output_complex_20220201_142623.tab")
 E1.pack(padx = 50, pady = 5)
 E1.place(x = 10, y = 35,width=530)
