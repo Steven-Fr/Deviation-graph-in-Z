@@ -125,7 +125,7 @@ L1.configure(bg= colour)
 L1.place ( x = 10, y = 5)
 #entry
 E1 = Entry(top, bd =4)
-E1.insert(0, r"C:\Users\sat11\Documents\GitHub\Parpas_DR\Dronex_VXX\backend_app\output\speed14_3feb\output_complex_speed14_f2k_4000x3200_1.tab")
+E1.insert(0, r"C:\Users\sat11\Desktop\Dronex\SCANSIONI_MACCHINA_INCLINOMETRO\XXXXXXXXX____SCANSIONI_DroneX\SPD014_scan\output_complex_20220201_142623.tab")
 E1.pack(padx = 50, pady = 5)
 E1.place(x = 10, y = 35,width=530)
 
