@@ -103,7 +103,7 @@ def grafico():
           fig = plt.figure()
           ax = Axes3D(fig)
           surf = ax.plot_trisurf(x, y, z, cmap= cmap_r, linewidth=0.1)        # cm.hsv  vmin=-0.1, vmax=0.1
-          fig.colorbar(surf, shrink=0.5, aspect=5)
+          fig.colorbar(surf, shrink=0.5, aspect=15)
           plt.savefig('teste.pdf')
           plt.show()
      else:
@@ -114,7 +114,7 @@ def grafico():
 #scelta percorso da interfaccia
 def select_file():
     filetypes = (('text files', '*.tab'),('All files', '*.*'))
-    filename2 = fd.askopenfilename(title='Open a file',initialdir='/',filetypes=filetypes)
+    filename2 = fd.askopenfilename(title='Open a file',initialdir=r'C:\Users\sat11\Documents\GitHub\Parpas_DR\DroneX_main_APP\backend_app\src\states\output',filetypes=filetypes)  #seleziona percorso
     E1.delete(0, "end")
     E1.insert(0,filename2)
 
