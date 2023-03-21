@@ -126,7 +126,7 @@ L1.configure(bg= colour)
 L1.place ( x = 10, y = 5)
 #entry
 E1 = Entry(top, bd =4)
-E1.insert(0, r"C:\Users\sat11\Documents\GitHub\Parpas_DR\DroneX_main_APP\gui_app\backend_app\src\states\output\20230320_152435_XS161_XY_20000.tab")
+E1.insert(0, r"C:\Users\sat11\Documents\GitHub\Parpas_DR\DroneX_main_APP\gui_app\backend_app\src\states\output\20230321_082255_XS161_XY_20000.tab")       #20230321_082916_XS161_XZ_20000.tab   # 20230321_083159_XS161_YZ_20000.tab   #20230321_082255_XS161_XY_20000.tab
 E1.pack(padx = 50, pady = 5)
 E1.place(x = 10, y = 35,width=530)
 
