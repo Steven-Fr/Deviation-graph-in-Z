@@ -25,7 +25,7 @@ from tkinter.messagebox import showinfo
 colour = 'green3'
 
 top = tkinter.Tk()
-top.title("Deviation graph in Z (© F.Steven)")
+top.title("Dronex or GTG plot scan 3D(© F.Steven)")
 top.geometry('550x150')
 top.configure(bg= colour)
 

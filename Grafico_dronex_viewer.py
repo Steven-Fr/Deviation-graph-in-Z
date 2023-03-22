@@ -26,7 +26,7 @@ import matplotlib as mpl
 colour = 'green3'
 
 top = tkinter.Tk()
-top.title("Deviation graph in Z (© F.Steven)")
+top.title("Dronex scan plane viewer (© F.Steven)")
 top.geometry('550x150')
 top.configure(bg= colour)
 
