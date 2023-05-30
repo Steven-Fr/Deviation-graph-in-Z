@@ -92,7 +92,7 @@ def grafico():
                if count > 175 and count < (size-1):
                     quota_x = float(line[10:19])
                     quota_y = float(line[21:31])
-                    quota_z = float(line[109:118])
+                    quota_z = float(line[87:97])
                     x.append(quota_x)
                     y.append(quota_y)
                     z.append(quota_z)
@@ -113,7 +113,7 @@ def grafico():
 #scelta percorso da interfaccia
 def select_file():
     filetypes = (('text files', '*.tab'),('All files', '*.*'))
-    filename2 = fd.askopenfilename(title='Open a file',initialdir='/',filetypes=filetypes)
+    filename2 = fd.askopenfilename(title='Open a file',initialdir=r'C:\Users\sat11\Documents\GitHub\Parpas_DR\DroneXPairingSoftware - Sorgente\backend_app\src\states\output',filetypes=filetypes)
     E1.delete(0, "end")
     E1.insert(0,filename2)
 
@@ -125,7 +125,7 @@ L1.configure(bg= colour)
 L1.place ( x = 10, y = 5)
 #entry
 E1 = Entry(top, bd =4)
-E1.insert(0, r"C:\Users\sat11\Desktop\Dronex\SCANSIONI_MACCHINA_INCLINOMETRO\XXXXXXXXX____SCANSIONI_DroneX\SPD014_scan\output_complex_20220201_142623.tab")
+E1.insert(0, r"C:\Users\sat11\Documents\GitHub\Parpas_DR\DroneXPairingSoftware - Sorgente\backend_app\src\states\output\20230523_121331_XS164_XY_20000.0.tab")
 E1.pack(padx = 50, pady = 5)
 E1.place(x = 10, y = 35,width=530)
 
