@@ -76,11 +76,13 @@ def grafico():
                if count > 175 and count < (size-1):
                     quota_x = float(line[10:19])
                     quota_y = float(line[21:31])
-                    errx = float(line[61:71])  #87:97
-                    #errx = errx/4
+                    errx = float(line[98:108])  # err x  98:108   # angolo 61:71
+                    errx= errx*1000
+                    #if errx < 0:
+                    #    errx = -errx
                     x.append(quota_x)
                     y.append(quota_y)
-                    z.append(errx)
+                    z.append(errx+1)
 
                count = count +1
 
@@ -89,26 +91,33 @@ def grafico():
 
           # Interpolazione dei dati
           grid_angle = griddata((x, y), z, (grid_x, grid_y), method = 'cubic')
-          #grid_angle2 = np.log1p(grid_angle)
 
+
+
+
+          #normalized_data = (grid_angle - grid_angle.min()) / (grid_angle.max() - grid_angle.min())
+          #grid_angle2 = np.log10(normalized_data)
+
+
+          '''
           # Normalizza i dati
-          normalized_data = (grid_angle - grid_angle.min()) / (grid_angle.max() - grid_angle.min())
-
+          normalized_data = (grid_angle - grid_angle.min()) / (grid_angle.max() - grid_angle.min()) # (0.05,0.05)#
+          print(normalized_data)
           # Applica una trasformazione più marcata ai valori di Z
-          grid_angle2 = np.power(normalized_data, 0.2)
-
+          grid_angle2 = np.power(normalized_data, 2)
+          '''
 
           # Creazione del grafico 3D
           fig = plt.figure()
           ax = fig.add_subplot(111, projection = '3d')
 
           # Disegno della superficie interpolata
-          surf = ax.plot_surface(grid_x, grid_y, grid_angle2, cmap = 'viridis', edgecolor = 'k')
-
+          surf = ax.plot_surface(grid_x, grid_y, grid_angle, cmap = cmap_r, edgecolor = 'k')
+          fig.colorbar(surf, shrink = 0.5, aspect = 5)
           # Aggiunta di etichette
           ax.set_xlabel('Quota Asse X (mm)')
           ax.set_ylabel('Quota Asse Y (mm)')
-          ax.set_zlabel('Angolo (gradi)')
+          ax.set_zlabel('err (um)')  #Millesimi di grado
 
           # Mostra il grafico
           plt.show()

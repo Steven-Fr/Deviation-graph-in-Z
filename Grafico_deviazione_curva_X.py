@@ -76,8 +76,8 @@ def grafico():
                if count > 175 and count < (size-1):
                     quota_x = float(line[10:19])
                     quota_y = float(line[21:31])
-                    errx = float(line[74:84])  #87:97
-
+                    errx = float(line[87:97])  # err x  87:97   # angolo 74:84
+                    errx= errx*1000
                     #if errx < 0:
                     #    errx = -errx
                     x.append(quota_x)
@@ -95,10 +95,8 @@ def grafico():
 
 
 
-          normalized_data = (grid_angle - grid_angle.min()) / (grid_angle.max() - grid_angle.min())
-
-          # Applica la trasformazione tangente iperbolica
-          grid_angle2 = np.log10(normalized_data)
+          #normalized_data = (grid_angle - grid_angle.min()) / (grid_angle.max() - grid_angle.min())
+          #grid_angle2 = np.log10(normalized_data)
 
 
           '''
@@ -114,12 +112,12 @@ def grafico():
           ax = fig.add_subplot(111, projection = '3d')
 
           # Disegno della superficie interpolata
-          surf = ax.plot_surface(grid_x, grid_y, grid_angle, cmap = 'viridis', edgecolor = 'k')
-
+          surf = ax.plot_surface(grid_x, grid_y, grid_angle, cmap = cmap_r, edgecolor = 'k')
+          fig.colorbar(surf, shrink = 0.5, aspect = 5)
           # Aggiunta di etichette
           ax.set_xlabel('Quota Asse X (mm)')
           ax.set_ylabel('Quota Asse Y (mm)')
-          ax.set_zlabel('Angolo (gradi)')
+          ax.set_zlabel('err (um)')  #Millesimi di grado
 
           # Mostra il grafico
           plt.show()
