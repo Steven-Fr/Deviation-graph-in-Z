@@ -32,25 +32,6 @@ top.configure(bg= colour)
 
 
 def reverse_colourmap(cmap, name = 'my_cmap_r'):
-    """
-    In:
-    cmap, name
-    Out:
-    my_cmap_r
-
-    Explanation:
-    t[0] goes from 0 to 1
-    row i:   x  y0  y1 -> t[0] t[1] t[2]
-                   /
-                  /
-    row i+1: x  y0  y1 -> t[n] t[1] t[2]
-
-    so the inverse should do the same:
-    row i+1: x  y1  y0 -> 1-t[0] t[2] t[1]
-                   /
-                  /
-    row i:   x  y1  y0 -> 1-t[n] t[2] t[1]
-    """
     reverse = []
     k = []
 
@@ -92,10 +73,10 @@ def grafico():
                if count > 175 and count < (size-1):
                     quota_x = float(line[10:19])
                     quota_y = float(line[21:31])
-                    quota_z = float(line[87:97])
+                    errx = float(line[74:84])  #87:97
                     x.append(quota_x)
                     y.append(quota_y)
-                    z.append(quota_z)
+                    z.append(errx)
 
                count = count +1
 
