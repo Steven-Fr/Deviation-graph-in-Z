@@ -14,10 +14,19 @@ from tkinter import filedialog as fd
 from tkinter.messagebox import showinfo
 from scipy.interpolate import griddata
 import threading
+import plotly.graph_objects as go
+import dash
+from dash import dcc
+from dash import html
+from dash.dependencies import Input, Output
+import webbrowser
+import asyncio
+from websockets import serve
 
 
+terminate_thread = threading.Event()
 
-colour = 'green3'
+colour = 'green2'
 
 top = tk.Tk()
 top.title("Deviation graph (© F.Steven)")
@@ -43,9 +52,42 @@ def reverse_colourmap(cmap, name = 'my_cmap_r'):
     my_cmap_r = cm.colors.LinearSegmentedColormap(name, LinearL)
     return my_cmap_r
 
-
+port = 8050
 
 def grafico():
+    global terminate_thread
+    global port
+     #port = port+1
+
+    terminate_thread.clear()
+
+    dash_thread = threading.Thread(target = grafico2)
+    dash_thread.start()
+
+    websocket_server_thread = threading.Thread(target = start_websocket_server)
+    websocket_server_thread.start()
+
+    webbrowser.open(f'http://127.0.0.1:{port}/')
+
+
+async def websocket_handler(websocket, path):
+    while True:
+        try:
+            await websocket.recv()
+        except websockets.exceptions.ConnectionClosed:
+            print("Finestra del browser chiusa")
+            terminate_thread.set()
+            break
+
+def start_websocket_server():
+    asyncio.set_event_loop(asyncio.new_event_loop())
+    server = serve(websocket_handler, "127.0.0.1", 8051)
+    asyncio.get_event_loop().run_until_complete(server)
+
+
+
+def grafico2():
+    global port
     cmap = cm.jet
     cmap_r = reverse_colourmap(cmap)
     scelta = var.get()
@@ -106,6 +148,8 @@ def grafico():
                 z.append(round(errx, 6))
 
             count = count + 1
+        print("nuovo")
+        print(z)
 
         def manipola_lista(lista):
             # Dividi la lista in intervalli di dimensione 17
@@ -177,35 +221,116 @@ def grafico():
 
         # Creazione di una griglia 2D per l'interpolazione
         grid_x, grid_y = np.mgrid[min(x):max(x):100j, min(y):max(y):100j]
-
         # Interpolazione dei dati
         grid_angle = griddata((x, y), z, (grid_x, grid_y), method = 'cubic')  # cubic, linear or nearest
 
-        # Creazione del grafico 3D
-        fig = plt.figure()
-        ax = fig.add_subplot(111, projection = '3d')
+        ########################
 
-        # Disegno della superficie interpolata
-        surf = ax.plot_surface(grid_x, grid_y, grid_angle, cmap = cmap_r, edgecolor = 'k')
-        fig.colorbar(surf, shrink = 0.5, aspect = 5)
-        # Aggiunta di etichette
-        ax.set_xlabel('Asse X (mm)')
-        ax.set_ylabel('Asse Y (mm)')
-        ax.set_zlabel('error (°)')  # Millesimi di grado
-        if not checkbox_var.get():
-            ax.set_zlim(-0.006, 0.006)
+        '''colorscale = [
+            [0, 'rgb(239, 0, 14)'],
+            [0.2, 'rgb(239, 0, 14)'],
+            [0.2, 'rgb(230, 207, 9)'],
+            [0.4, 'rgb(230, 207, 9)'],
+            [0.4, 'rgb(29, 211, 57)'],
+            [0.6, 'rgb(29, 211, 57)'],
+            [0.6, 'rgb(230, 207, 9)'],
+            [0.8, 'rgb(230, 207, 9)'],
+            [0.8, 'rgb(239, 0, 14)'],
+            [1.0, 'rgb(239, 0, 14)']
+        ]'''
 
-        list_thread = threading.Thread(target = show_point_list, args = (x, y, z))
-        list_thread.start()
+        def get_point_list(x, y, z):
+            point_list = 'x(mm)\t\ty(mm)\t\terr(°)\n'
+            for xi, yi, zi in zip(x, y, z):
+                point_list += f'{xi:.1f}\t\t{yi:.1f}\t\t{zi:.6f}\n'
+            return point_list
 
 
-        # Mostra il grafico
-        plt.show()
+
+            '''point_list = 'x(mm)\t\ty(mm)\t\terr(°)\n'
+            for xi, yi, zi in zip(x, y, z):
+                point_list += f'{xi:.1f}\t\t{yi:.1f}\t\t{zi:.6f}\n'
+            return point_list'''
+
+        # Crea il grafico 3D interattivo con plotly
+        fig = go.Figure(data = [go.Surface(z = grid_angle, x = grid_x, y = grid_y,colorscale= "Jet")])
+
+        # Aggiungi etichette ai punti
+        hover_text = []
+
+        for i in range(len(grid_x)):
+            hover_text.append([])
+            for j in range(len(grid_x[i])):
+                val = str(grid_angle[i][j])
+                hover_text[i].append(val)
+
+        fig.update_traces(hoverinfo = 'z', text = hover_text)
+
+        fig.update_layout(scene = dict(
+            xaxis_title = 'Asse X (mm)',
+            yaxis_title = 'Asse Y (mm)',
+            zaxis_title = 'Err (°)',
+            zaxis = dict(range = [-0.006, 0.006])
+        ))
+
+        # Crea un'applicazione Dash
+        app = dash.Dash(__name__)
+        app.config.suppress_callback_exceptions = True
+        # Layout dell'applicazione
+        app.layout = html.Div(children = [
+            html.Div([
+                dcc.Textarea(
+                    id = 'point-list',
+                    value = get_point_list(x, y, z),
+                    style = {'width': 360, 'height': 900}
+                )
+            ], style = {'float': 'right', 'margin-right': '60px'}),
+            dcc.Graph(
+                id = '3d-graph',
+                figure = fig,
+                style = {'width': '75%', 'height': 900}
+            )
+        ])
+
+        # Funzione callback per aggiornare l'elenco dei punti
+        @app.callback(
+            Output('3d-graph', 'figure'),
+            [Input('dropdown-selector', 'value'),  # Sostituisci con il tuo input
+             Input('another-input', 'value')]
+        )
+
+
+
+        def update_graph(selected_value, another_value):
+            # Aggiorna i dati x, y, z in base agli input
+            # Ad esempio, usa i nuovi valori di selected_value e another_value per generare nuovi dati x, y, z
+
+            # Crea il nuovo grafico
+            updated_fig = go.Figure()
+            # Aggiungi traccia 3D con i nuovi dati x, y, z
+            updated_fig.add_trace(go.Surface(z = new_z, x = new_x, y = new_y))
+
+            # Aggiorna il layout o altre configurazioni se necessario
+            updated_fig.update_layout(scene = dict(
+                xaxis_title = 'Asse X',
+                yaxis_title = 'Asse Y',
+                zaxis_title = 'Asse Z',
+                zaxis = dict(range = [-2, 2])
+            ))
+
+            return updated_fig
+
+        # Esegui l'applicazione Dash
+        app.run_server(debug = False, port = port, use_reloader = False)
+        print("SIIIIIIIIIIIII")
+        #fig.show()
+
 
     else:
         L3 = Label(top, text = "File not exist", fg = "red")
         L3.pack(padx = 50, pady = 5)
         L3.place(x = 190, y = 90)
+
 
 
 # scelta percorso da interfaccia
@@ -259,10 +384,14 @@ checkbox.place(x = 90, y = 121)
 
 
 def quit():
+    global terminate_thread
+    terminate_thread.set()
     top.destroy()
     sys.exit()
 
+
 # quit
 top.protocol('WM_DELETE_WINDOW', quit)
+
 # loop
 top.mainloop()
