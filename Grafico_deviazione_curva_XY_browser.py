@@ -62,27 +62,11 @@ def grafico():
     terminate_thread.clear()
 
     dash_thread = threading.Thread(target = grafico2)
+    dash_thread.setDaemon(True)
     dash_thread.start()
-
-    websocket_server_thread = threading.Thread(target = start_websocket_server)
-    websocket_server_thread.start()
 
     webbrowser.open(f'http://127.0.0.1:{port}/')
 
-
-async def websocket_handler(websocket, path):
-    while True:
-        try:
-            await websocket.recv()
-        except websockets.exceptions.ConnectionClosed:
-            print("Finestra del browser chiusa")
-            terminate_thread.set()
-            break
-
-def start_websocket_server():
-    asyncio.set_event_loop(asyncio.new_event_loop())
-    server = serve(websocket_handler, "127.0.0.1", 8051)
-    asyncio.get_event_loop().run_until_complete(server)
 
 
 
@@ -301,24 +285,25 @@ def grafico2():
 
 
 
-        def update_graph(selected_value, another_value):
+        def update_graph(value,figure):
+            global fig
             # Aggiorna i dati x, y, z in base agli input
             # Ad esempio, usa i nuovi valori di selected_value e another_value per generare nuovi dati x, y, z
 
             # Crea il nuovo grafico
-            updated_fig = go.Figure()
+            fig = go.Figure()
             # Aggiungi traccia 3D con i nuovi dati x, y, z
-            updated_fig.add_trace(go.Surface(z = new_z, x = new_x, y = new_y))
-
+            fig.add_trace(go.Surface(z = new_z, x = new_x, y = new_y))
+            value = get_point_list(z = new_z, x = new_x, y = new_y)
             # Aggiorna il layout o altre configurazioni se necessario
-            updated_fig.update_layout(scene = dict(
+            fig.update_layout(scene = dict(
                 xaxis_title = 'Asse X',
                 yaxis_title = 'Asse Y',
                 zaxis_title = 'Asse Z',
                 zaxis = dict(range = [-2, 2])
             ))
 
-            return updated_fig
+            return fig,value
 
         # Esegui l'applicazione Dash
         app.run_server(debug = False, port = port, use_reloader = False)
