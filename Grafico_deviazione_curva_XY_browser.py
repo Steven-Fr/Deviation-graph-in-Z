@@ -15,6 +15,7 @@ from tkinter.messagebox import showinfo
 from scipy.interpolate import griddata
 import threading
 import plotly.graph_objects as go
+from plotly.colors import make_colorscale
 import dash
 from dash import dcc
 from dash import html
@@ -57,7 +58,12 @@ port = 8050
 def grafico():
     global terminate_thread
     global port
-     #port = port+1
+    port = port+1
+
+    try:
+        app.server.stop()
+    except:
+        print("no server")
 
     terminate_thread.clear()
 
@@ -67,11 +73,17 @@ def grafico():
 
     webbrowser.open(f'http://127.0.0.1:{port}/')
 
+    try:
+        app.server.stop()
+    except:
+        print("no server")
+
 
 
 
 def grafico2():
     global port
+
     cmap = cm.jet
     cmap_r = reverse_colourmap(cmap)
     scelta = var.get()
@@ -208,20 +220,6 @@ def grafico2():
         # Interpolazione dei dati
         grid_angle = griddata((x, y), z, (grid_x, grid_y), method = 'cubic')  # cubic, linear or nearest
 
-        ########################
-
-        '''colorscale = [
-            [0, 'rgb(239, 0, 14)'],
-            [0.2, 'rgb(239, 0, 14)'],
-            [0.2, 'rgb(230, 207, 9)'],
-            [0.4, 'rgb(230, 207, 9)'],
-            [0.4, 'rgb(29, 211, 57)'],
-            [0.6, 'rgb(29, 211, 57)'],
-            [0.6, 'rgb(230, 207, 9)'],
-            [0.8, 'rgb(230, 207, 9)'],
-            [0.8, 'rgb(239, 0, 14)'],
-            [1.0, 'rgb(239, 0, 14)']
-        ]'''
 
         def get_point_list(x, y, z):
             point_list = 'x(mm)\t\ty(mm)\t\terr(°)\n'
@@ -230,14 +228,9 @@ def grafico2():
             return point_list
 
 
+        colors = ['red', 'yellow', 'lime', 'yellow', 'red']
 
-            '''point_list = 'x(mm)\t\ty(mm)\t\terr(°)\n'
-            for xi, yi, zi in zip(x, y, z):
-                point_list += f'{xi:.1f}\t\t{yi:.1f}\t\t{zi:.6f}\n'
-            return point_list'''
-
-        # Crea il grafico 3D interattivo con plotly
-        fig = go.Figure(data = [go.Surface(z = grid_angle, x = grid_x, y = grid_y,colorscale= "Jet")])
+        fig = go.Figure(data = [go.Surface(z = grid_angle, x = grid_x, y = grid_y, cmax = 0.003, cmin = -0.003, colorscale = colors, reversescale= True)])
 
         # Aggiungi etichette ai punti
         hover_text = []
@@ -277,7 +270,7 @@ def grafico2():
         ])
 
         # Funzione callback per aggiornare l'elenco dei punti
-        @app.callback(
+        '''@app.callback(
             Output('3d-graph', 'figure'),
             [Input('dropdown-selector', 'value'),  # Sostituisci con il tuo input
              Input('another-input', 'value')]
@@ -303,12 +296,12 @@ def grafico2():
                 zaxis = dict(range = [-2, 2])
             ))
 
-            return fig,value
-
+            return fig,value'''
         # Esegui l'applicazione Dash
         app.run_server(debug = False, port = port, use_reloader = False)
         print("SIIIIIIIIIIIII")
         #fig.show()
+
 
 
     else:

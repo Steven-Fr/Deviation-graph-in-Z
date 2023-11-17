@@ -14,7 +14,7 @@ from tkinter import filedialog as fd
 from tkinter.messagebox import showinfo
 from scipy.interpolate import griddata
 import threading
-
+from matplotlib.colors import BoundaryNorm
 
 
 colour = 'green3'
@@ -185,9 +185,17 @@ def grafico():
         fig = plt.figure()
         ax = fig.add_subplot(111, projection = '3d')
 
+        ############
+
+        intervals = [-1,-0.003, -0.001, 0.001, 0.003,1]
+        colors = ['red', 'yellow', 'lime', 'yellow', 'red']
+        cmap2 = cm.colors.ListedColormap(colors)
+        norm = BoundaryNorm(intervals, cmap2.N, clip = True)
+
+        ##############
         # Disegno della superficie interpolata
-        surf = ax.plot_surface(grid_x, grid_y, grid_angle, cmap = cmap_r, edgecolor = 'k')
-        fig.colorbar(surf, shrink = 0.5, aspect = 5)
+        surf = ax.plot_surface(grid_x, grid_y, grid_angle,  cmap = cmap2, norm=norm, edgecolor = 'k')
+        fig.colorbar(surf, shrink = 0.5, ticks=intervals + [0], aspect = 10,pad=0.12)
         # Aggiunta di etichette
         ax.set_xlabel('Asse X (mm)')
         ax.set_ylabel('Asse Y (mm)')
