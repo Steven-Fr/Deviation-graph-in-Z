@@ -22,7 +22,6 @@ from dash.dependencies import Input, Output
 import webbrowser
 import threading
 
-
 terminate_thread = threading.Event()
 
 colour = 'green3'
